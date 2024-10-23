@@ -10,6 +10,7 @@ import { Badge } from './entities/badge.entity';
 import { AttributeLevel } from './entities/attributeLevel.entity';
 import { UserModule } from './user/user.module';
 import { BadgeModule } from './badge/badge.module';
+import { UserLevelModule } from './user-level/user-level.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { BadgeModule } from './badge/badge.module';
     TypeOrmModule.forFeature([User, Task, Attribute, UserLevel, Badge, AttributeLevel]),
     UserModule,
     BadgeModule,
+    UserLevelModule,
   ],
   controllers: [AppController],
   providers: [AppService],

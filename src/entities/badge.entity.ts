@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('badges') 
+@Unique(['title']) 
 export class Badge {
   @PrimaryGeneratedColumn()
   id: number;
