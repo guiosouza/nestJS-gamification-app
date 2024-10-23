@@ -1,8 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne, Unique, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne, Unique } from 'typeorm';
 import { Task } from './task.entity';
 import { Attribute } from './attribute.entity';
 import { Badge } from './badge.entity';
-import { getRepository } from 'typeorm';
 
 @Entity('users')
 @Unique(['name']) // Define que o campo 'name' é único
@@ -19,7 +18,7 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ default: 0 }) // totalExp começando com 1 por padrão
+  @Column({ default: 0 })
   totalExp: number;
 
   @Column({ default: 0 })
@@ -31,21 +30,9 @@ export class User {
   @Column({ default: 1 })
   level: number;
 
-  @OneToMany(() => Task, (task) => task.user) // Um usuário pode ter várias tarefas
+  @OneToMany(() => Task, (task) => task.user)
   tasks: Task[];
 
-  @ManyToMany(() => Attribute, (attribute) => attribute.users) // Relacionamento com atributos
+  @ManyToMany(() => Attribute, (attribute) => attribute.users)
   attributes: Attribute[];
-
-  // Hook para inserir a badge padrão "NOVICE"
-  @BeforeInsert()
-  async setDefaultBadge() {
-    if (!this.badge) {
-      const badgeRepository = getRepository(Badge);
-      const noviceBadge = await badgeRepository.findOne({ where: { title: 'NOVICE' } });
-      if (noviceBadge) {
-        this.badge = noviceBadge;
-      }
-    }
-  }
 }
