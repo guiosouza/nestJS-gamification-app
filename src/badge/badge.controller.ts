@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, ParseIntPipe } from '@nestjs/common';
 import { BadgeService } from './badge.service.js';
 import { CreateBadgeDto } from './dto/create-badge.dto.js';
 import { BadgeDto } from './dto/badge.dto.js';
@@ -20,20 +20,20 @@ export class BadgeController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<BadgeDto> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<BadgeDto> {
     return this.badgeService.findOne(id);
   }
 
   @Patch(':id')
   async updateBadge(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateBadgeDto: UpdateBadgeDto,
   ): Promise<{ message: string; updatedBadge: any }> {
     return this.badgeService.update(id, updateBadgeDto);
   }
 
   @Delete(':id')
-  async deleteBadge(@Param('id') id: number): Promise<{ message: string }> {
+  async deleteBadge(@Param('id', ParseIntPipe) id: number) {
     return this.badgeService.delete(id);
   }
 
