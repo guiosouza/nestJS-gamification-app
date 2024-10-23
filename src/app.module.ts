@@ -9,6 +9,7 @@ import { UserLevel } from './entities/userLevel.entity';
 import { Badge } from './entities/badge.entity';
 import { AttributeLevel } from './entities/attributeLevel.entity';
 import { UserModule } from './user/user.module';
+import { BadgeModule } from './badge/badge.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './user/user.module';
       synchronize: true, // In development, allot to CREATE tables automatically
     }),
     TypeOrmModule.forFeature([User, Task, Attribute, UserLevel, Badge, AttributeLevel]),
-    UserModule, // This registers the User entity to be USED
+    UserModule,
+    BadgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

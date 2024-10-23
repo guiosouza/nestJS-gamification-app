@@ -5,6 +5,7 @@ export class Badge {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ unique: true })
   @Column()
   title: string;
 
