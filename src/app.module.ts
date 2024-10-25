@@ -18,9 +18,8 @@ import { UserLevelModule } from './user-level/user-level.module';
       type: 'sqlite',
       database: 'database.sqlite',
       entities: [User, Task, Attribute, UserLevel, Badge, AttributeLevel],
-      synchronize: true, // In development, allot to CREATE tables automatically
+      synchronize: true,
     }),
-    TypeOrmModule.forFeature([User, Task, Attribute, UserLevel, Badge, AttributeLevel]),
     UserModule,
     BadgeModule,
     UserLevelModule,
@@ -28,4 +27,4 @@ import { UserLevelModule } from './user-level/user-level.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
