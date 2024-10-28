@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { BadgeModule } from './badge/badge.module';
 import { UserLevelModule } from './user-level/user-level.module';
-import AppDataSource from '../data-source-cli';
+import AppDataSource from 'data-source-cli';
 
 @Module({
   imports: [

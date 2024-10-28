@@ -10,7 +10,7 @@ const AppDataSource = new DataSource({
     type: 'sqlite',
     database: 'database.sqlite',
     entities: [User, Task, Attribute, UserLevel, Badge, AttributeLevel],
-    migrations: [__dirname + '/migrations/*{.ts,.js}'],
+    migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
     synchronize: false,
     logging: true,
     migrationsRun: true,

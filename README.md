@@ -71,7 +71,6 @@ $ yarn migration:run
 $ yarn migration:revert
 ```
 
-
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
