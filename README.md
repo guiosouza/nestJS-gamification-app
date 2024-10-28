@@ -58,6 +58,20 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## Create, run and revert migrations
+
+```bash
+# generate a new migration
+$ yarn migration:generate migrationName
+
+# run created migration
+$ yarn migration:run
+
+# revert migration
+$ yarn migration:revert
+```
+
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
