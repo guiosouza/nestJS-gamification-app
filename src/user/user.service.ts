@@ -17,40 +17,41 @@ export class UserService {
     private badgeRepository: Repository<Badge>,
   ) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User & { expNeededToLevelUp: number }> {
     const existingUser = await this.userRepository.findOne({ where: { name: createUserDto.name } });
+  
     if (existingUser) {
       throw new BadRequestException('Nome de usuário já está em uso.');
     }
-
-
+  
     const user = this.userRepository.create(createUserDto);
-
-
     user.level = 1;
     user.totalExp = 0;
-
-
+  
     const noviceBadge = await this.badgeRepository.findOne({ where: { title: 'NOVICE' } });
     if (!noviceBadge) {
       throw new BadRequestException('Badge "NOVICE" não encontrado.');
     }
+  
     user.badge = noviceBadge;
-
+  
     const nextLevel = await this.userLevelRepository.findOne({ where: { level: user.level + 1 } });
     if (!nextLevel) {
       throw new BadRequestException('Erro ao calcular experiência para o próximo nível.');
     }
-    user.expNeededToLevelUp = nextLevel.expRequired - user.totalExp;
-
+  
+    // Defina o expNeededToLevelUp dinamicamente sem persistir no banco de dados
+    const expNeededToLevelUp = nextLevel.expRequired - user.totalExp;
     const savedUser = await this.userRepository.save(user);
-
-    return savedUser;
+  
+    // Retorna o usuário com o campo calculado dinamicamente
+    return { ...savedUser, expNeededToLevelUp };
   }
+  
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({ 
-      relations: ['badge', 'tasks'] 
+    return this.userRepository.find({
+      relations: ['badge', 'tasks']
     });
   }
 

@@ -8,7 +8,7 @@ export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<User & { expNeededToLevelUp: number }> {
     return this.userService.create(createUserDto);
   }
 
@@ -17,7 +17,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id') 
+  @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return this.userService.findOne(id);
   }

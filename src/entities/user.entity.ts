@@ -21,9 +21,6 @@ export class User {
   @Column({ default: 0 })
   totalExp: number;
 
-  @Column({ default: 0 })
-  expNeededToLevelUp: number;
-
   @ManyToOne(() => Badge, { nullable: true })
   badge: Badge;
 

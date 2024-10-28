@@ -19,10 +19,7 @@ export class CreateUserDto {
   @IsOptional()
   totalExp?: number;
 
-  @IsInt({ message: 'expNeededToLevelUp deve ser um número inteiro.' })
-  @Min(0, { message: 'expNeededToLevelUp deve ser pelo menos 0.' })
-  @IsOptional()
-  expNeededToLevelUp?: number;
+  // Remove o campo expNeededToLevelUp, pois ele será calculado dinamicamente pelo serviço
 
   @IsInt({ message: 'O nível deve ser um número inteiro.' })
   @Min(1, { message: 'O nível deve ser pelo menos 1.' })
