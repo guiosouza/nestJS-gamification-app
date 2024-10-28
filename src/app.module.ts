@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { BadgeModule } from './badge/badge.module';
 import { UserLevelModule } from './user-level/user-level.module';
+import { TaskModule } from './task/task.module';
 import AppDataSource from 'data-source-cli';
 
 @Module({
@@ -12,6 +13,7 @@ import AppDataSource from 'data-source-cli';
     UserModule,
     BadgeModule,
     UserLevelModule,
+    TaskModule,
   ],
 })
 export class AppModule {}
