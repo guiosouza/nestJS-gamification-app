@@ -16,41 +16,41 @@ export class UserService {
     private userLevelRepository: Repository<UserLevel>,
     @InjectRepository(Badge)
     private badgeRepository: Repository<Badge>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User & { expNeededToLevelUp: number }> {
     try {
       const existingUser = await this.userRepository.findOne({ where: { name: createUserDto.name } });
-  
+
       if (existingUser) {
         throw new BadRequestException('Nome de usuário já está em uso.');
       }
-  
+
       const user = this.userRepository.create(createUserDto);
       user.level = 1;
       user.totalExp = 0;
-  
+
       const noviceBadge = await this.badgeRepository.findOne({ where: { title: 'NOVICE' } });
       if (!noviceBadge) {
         throw new BadRequestException('Badge "NOVICE" não encontrado.');
       }
-  
+
       user.badge = noviceBadge;
-  
+
       const nextLevel = await this.userLevelRepository.findOne({ where: { level: user.level + 1 } });
       if (!nextLevel) {
         throw new BadRequestException('Erro ao calcular experiência para o próximo nível.');
       }
-  
+
       const expNeededToLevelUp = nextLevel.expRequired - user.totalExp;
       const savedUser = await this.userRepository.save(user);
-  
+
       return { ...savedUser, expNeededToLevelUp };
     } catch (error) {
       throw new BadRequestException('Erro ao tentar criar o usuário.');
     }
   }
-  
+
   async findAll(): Promise<User[]> {
     try {
       return await this.userRepository.find({
@@ -87,7 +87,7 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<{ message: string; user: User }> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
-    
+
       if (!user) {
         throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
       }
@@ -100,7 +100,7 @@ export class UserService {
 
       const updatedUser = await this.userRepository.save(user);
 
-      return { 
+      return {
         message: 'Usuário atualizado com sucesso.',
         user: updatedUser,
       };
@@ -110,18 +110,20 @@ export class UserService {
   }
 
   async delete(id: number): Promise<{ message: string }> {
+    const user = await this.userRepository.findOne({ where: { id } });
+  
+    if (!user) {
+      // Retornamos o NotFoundException caso o usuário não exista
+      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
+    }
+  
+    // Tentamos remover o usuário e capturamos possíveis erros
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
-
-      if (!user) {
-        throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-      }
-
       await this.userRepository.remove(user);
-
       return { message: 'Usuário deletado com sucesso.' };
     } catch (error) {
       throw new BadRequestException('Erro ao tentar deletar o usuário.');
     }
   }
+  
 }

@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { BadgeModule } from './badge/badge.module';
 import { UserLevelModule } from './user-level/user-level.module';
 import { TaskModule } from './task/task.module';
+import { AttributeModule } from './attribute/attribute.module';
 import AppDataSource from 'data-source-cli';
 
 @Module({
@@ -14,6 +15,7 @@ import AppDataSource from 'data-source-cli';
     BadgeModule,
     UserLevelModule,
     TaskModule,
+    AttributeModule,
   ],
 })
 export class AppModule {}

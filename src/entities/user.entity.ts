@@ -27,9 +27,9 @@ export class User {
   @Column({ default: 1 })
   level: number;
 
-  @OneToMany(() => Task, (task) => task.user)
+  @OneToMany(() => Task, (task) => task.user, { cascade: true, onDelete: 'CASCADE' })
   tasks: Task[];
-
-  @ManyToMany(() => Attribute, (attribute) => attribute.users)
-  attributes: Attribute[];
+  
+  @ManyToMany(() => Attribute, (attribute) => attribute.users, { cascade: true })
+  attributes: Attribute[];  
 }
