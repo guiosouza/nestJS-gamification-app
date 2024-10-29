@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -13,13 +13,13 @@ export class AttributeService {
   constructor(
     @InjectRepository(Attribute)
     private readonly attributeRepository: Repository<Attribute>,
-    
+
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
-  ) {}
+  ) { }
 
   async create(createAttributeDto: CreateAttributeDto): Promise<Attribute> {
     const { title, exp, level, tasks, users } = createAttributeDto;
@@ -43,4 +43,22 @@ export class AttributeService {
 
     return this.attributeRepository.save(attribute);
   }
+
+
+  async findAll(): Promise<Attribute[]> {
+    return this.attributeRepository.find();
+  }
+
+  async findById(id: number): Promise<Attribute> {
+    const attribute = await this.attributeRepository.findOne({
+      where: { id },
+    });
+
+    if (!attribute) {
+      throw new NotFoundException(`Attribute with ID ${id} not found`);
+    }
+
+    return attribute;
+  }
+
 }

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from 't
 import { User } from './user.entity';
 import { Attribute } from './attribute.entity';
 
-@Entity('tasks') 
+@Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,12 +19,12 @@ export class Task {
   @Column()
   isTimeBased: boolean;
 
-  @Column()
+  @Column({ default: 0 })
   timePack: number;
 
-  @Column()
-  totalTime: number;
-
+  @Column({ nullable: true })
+  totalTime?: number;
+  
   @Column()
   status: boolean;
 
