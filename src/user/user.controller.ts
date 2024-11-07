@@ -1,39 +1,34 @@
-import { Controller, Get, Param, Post, Body, Patch, UsePipes, ValidationPipe, Delete } from '@nestjs/common';
-import { User } from 'src/entities/user.entity';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User & { expNeededToLevelUp: number }> {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  async findAll(): Promise<User[]> {
+  findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<User> {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findOne(id);
   }
 
   @Patch(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async update(
-    @Param('id') id: number,
-    @Body() updateUserDto: UpdateUserDto
-  ): Promise<{ message: string; user: User }> {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<{ message: string }> {
-    return this.userService.delete(id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.remove(id);
   }
 }

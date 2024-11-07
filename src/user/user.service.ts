@@ -1,129 +1,85 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Users } from '../entities/user-entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserLevel } from 'src/entities/userLevel.entity';
-import { Badge } from 'src/entities/badge.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(UserLevel)
-    private userLevelRepository: Repository<UserLevel>,
-    @InjectRepository(Badge)
-    private badgeRepository: Repository<Badge>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
   ) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User & { expNeededToLevelUp: number }> {
+  async create(createUserDto: CreateUserDto) {
     try {
-      const existingUser = await this.userRepository.findOne({ where: { name: createUserDto.name } });
-
-      if (existingUser) {
-        throw new BadRequestException('Nome de usuário já está em uso.');
-      }
-
       const user = this.userRepository.create(createUserDto);
-      user.level = 1;
-      user.totalExp = 0;
-
-      const noviceBadge = await this.badgeRepository.findOne({ where: { title: 'NOVICE' } });
-      if (!noviceBadge) {
-        throw new BadRequestException('Badge "NOVICE" não encontrado.');
-      }
-
-      user.badge = noviceBadge;
-
-      const nextLevel = await this.userLevelRepository.findOne({ where: { level: user.level + 1 } });
-      if (!nextLevel) {
-        throw new BadRequestException('Erro ao calcular experiência para o próximo nível.');
-      }
-
-      const expNeededToLevelUp = nextLevel.expRequired - user.totalExp;
       const savedUser = await this.userRepository.save(user);
-
-      return { ...savedUser, expNeededToLevelUp };
+      return {
+        message: 'Usuário criado com sucesso!',
+        user: savedUser
+      };
     } catch (error) {
-      throw new BadRequestException('Erro ao tentar criar o usuário.');
+      console.error('Error creating user:', error);
+      throw error;
     }
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll() {
     try {
-      return await this.userRepository.find({
-        relations: ['badge', 'tasks'],
-      });
+      return await this.userRepository.find() || [];
     } catch (error) {
-      throw new BadRequestException('Erro ao buscar a lista de usuários.');
+      console.error('Error finding users:', error);
+      return [];
     }
   }
 
-  async findOne(id: number): Promise<User & { expNeededToLevelUp: number }> {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { id },
-        relations: ['tasks', 'badge'],
-      });
-      if (!user) {
-        throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-      }
-
-      const nextLevel = await this.userLevelRepository.findOne({ where: { level: user.level + 1 } });
-      if (!nextLevel) {
-        throw new BadRequestException('Erro ao calcular experiência para o próximo nível.');
-      }
-
-      const expNeededToLevelUp = nextLevel.expRequired - user.totalExp;
-
-      return { ...user, expNeededToLevelUp };
-    } catch (error) {
-      throw new BadRequestException('Erro ao buscar o usuário.');
+  async findOne(id: number): Promise<Users> {
+    if (!id) {
+      throw new NotFoundException('User ID is required');
     }
+
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<{ message: string; user: User }> {
+  async update(id: number, updateUserDto: UpdateUserDto) {
+
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
-
-      if (!user) {
-        throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-      }
-
-      if ('badge' in updateUserDto) {
-        throw new BadRequestException('O campo "badge" não pode ser atualizado diretamente.');
-      }
-
+      const user = await this.findOne(id);
       Object.assign(user, updateUserDto);
 
       const updatedUser = await this.userRepository.save(user);
 
       return {
-        message: 'Usuário atualizado com sucesso.',
-        user: updatedUser,
-      };
+        message: "Usuário atualizado com sucesso!",
+        user: updatedUser
+      }
+
     } catch (error) {
-      throw new BadRequestException('Erro ao tentar atualizar o usuário.');
+      console.error('Error updating user:', error);
     }
+
+
   }
 
-  async delete(id: number): Promise<{ message: string }> {
-    const user = await this.userRepository.findOne({ where: { id } });
-  
-    if (!user) {
-      // Retornamos o NotFoundException caso o usuário não exista
-      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-    }
-  
-    // Tentamos remover o usuário e capturamos possíveis erros
+  async remove(id: number) {
+
     try {
+      const user = await this.findOne(id);
       await this.userRepository.remove(user);
-      return { message: 'Usuário deletado com sucesso.' };
+
+      return {
+        message: "Usuário removido com sucesso!",
+        user
+      }
     } catch (error) {
-      throw new BadRequestException('Erro ao tentar deletar o usuário.');
+      console.error('Error removing user:', error);
     }
   }
-  
 }

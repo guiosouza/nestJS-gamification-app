@@ -1,20 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
-import { BadgeModule } from './badge/badge.module';
-import { UserLevelModule } from './user-level/user-level.module';
-import { TaskModule } from './task/task.module';
-import { AttributeModule } from './attribute/attribute.module';
-import AppDataSource from 'data-source-cli';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(AppDataSource.options),
-    UserModule,
-    BadgeModule,
-    UserLevelModule,
-    TaskModule,
-    AttributeModule,
-  ],
+  imports: [DatabaseModule, UserModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

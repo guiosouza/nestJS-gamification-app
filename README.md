@@ -26,49 +26,52 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+# API de Gamificação
+
+## Configuração do Banco de Dados
+
+Este projeto utiliza MySQL como banco de dados, que é executado em um contêiner Docker. Siga as instruções abaixo para configurar e iniciar o banco de dados.
+
+### Subir o Banco de Dados com Docker
+
+1. Certifique-se de que o Docker está instalado e em execução na sua máquina.
+2. Navegue até o diretório raiz do projeto.
+3. Execute o comando abaixo para iniciar o contêiner do MySQL:
+
+```bash
+docker-compose up -d
+```
+
 ## Project setup
 
 ```bash
-$ yarn install
+$ npm install
 ```
 
 ## Compile and run the project
 
 ```bash
 # development
-$ yarn run start
+$ npm run start
 
 # watch mode
-$ yarn run start:dev
+$ npm run start:dev
 
 # production mode
-$ yarn run start:prod
+$ npm run start:prod
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ yarn run test
+$ npm run test
 
 # e2e tests
-$ yarn run test:e2e
+$ npm run test:e2e
 
 # test coverage
-$ yarn run test:cov
-```
-
-## Create, run and revert migrations
-
-```bash
-# generate a new migration
-$ yarn migration:generate migrationName
-
-# run created migration
-$ yarn migration:run
-
-# revert migration
-$ yarn migration:revert
+$ npm run test:cov
 ```
 
 ## Resources

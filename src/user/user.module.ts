@@ -1,17 +1,13 @@
-// user.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { Badge } from 'src/entities/badge.entity';
-import { UserLevel } from 'src/entities/userLevel.entity';
-import { UserService } from './user.service';
+import { Users } from '../entities/user-entity';
 import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Badge, UserLevel]), 
-  ],
-  providers: [UserService],
+  imports: [TypeOrmModule.forFeature([Users])],
   controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService]
 })
 export class UserModule {}
